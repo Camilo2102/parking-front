@@ -1,2 +1,2 @@
-# next-template
-Nextjs template for use with spring-template
+# next-parking
+Nextjs parking for use with spring-parking

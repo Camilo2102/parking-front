@@ -12,8 +12,8 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import GlobalProviders from './providers/common/globalProviders';
 
 export const metadata: Metadata = {
-  title: 'Template',
-  description: 'Template',
+  title: 'Parking',
+  description: 'Parking',
 }
 
 export default function RootLayout({
