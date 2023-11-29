@@ -8,7 +8,7 @@ import 'primeicons/primeicons.css';
 
 import 'primeflex/primeflex.css';
 
-import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "./theme.css";
 import GlobalProviders from './providers/common/globalProviders';
 
 export const metadata: Metadata = {
