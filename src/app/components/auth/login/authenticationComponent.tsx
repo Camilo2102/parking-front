@@ -10,10 +10,13 @@ import { Button } from "primereact/Button";
 import useAuthService from "@/app/services/authService";
 import { useNavigationContext } from "@/app/providers/common/navigationProvider";
 import PasswordRecoveryDialog from "./passwordRecoveryDialogComponent";
+import { useRouter } from "next/navigation";
 
 export default function AuthenticacionComponent() {
 
     const { login } = useAuthService();
+
+    const router = useRouter();
 
     const { goToRoute } = useNavigationContext();
 
@@ -27,7 +30,10 @@ export default function AuthenticacionComponent() {
         e.preventDefault();
 
         login(credential).then(res => {
-            //TODO redireccionar al aplicativo principal
+            router.push("/pages/main");
+        }).catch(err => {
+            console.log(err);
+            
         })
 
     }

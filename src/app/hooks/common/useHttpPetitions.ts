@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import * as Messages from "../../constants/messageConstant";
 import { useAuthContext } from "../../providers/common/authProvider";
 import { useToastContext } from "../../providers/common/toastProvider";
@@ -9,6 +10,9 @@ export default function useHttpPetitions() {
     const APIURL = "http://localhost:7879/";
 
     const { authorized, setAuthorized } = useAuthContext();
+
+    const router = useRouter();
+
     const {getCredentials} = useAuth(); 
 
     const {showError} = useToastContext();
@@ -33,6 +37,8 @@ export default function useHttpPetitions() {
         }
     }
 
+    
+
     /**
          * Maneja la respuesta de la petición fetch, realizando validaciones y parseando los datos.
          * @param fetchPetition La petición fetch a la cual se le va a aplicar la validación de los datos.
@@ -50,8 +56,9 @@ export default function useHttpPetitions() {
             err => {
                 err.json().then((res: any) => {
                     if (res.status === 401) {
-                        setAuthorized(false);
+                        
                     }
+                    router.push("/pages/auth/login");
                     showError(Messages.MESSAGE_ERROR, res.error);
                 });
             }
