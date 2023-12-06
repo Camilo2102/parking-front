@@ -1,0 +1,11 @@
+export const GET_ALL_BY_FILTER: string = "/getAllByFilters";
+export const GET_ALL_COUNT_ROUTE: string = "/getAllCount";
+export const GET_ALL_BY_PAGE_ROUTE: string = "/getAllByPage";
+export const GET_ALL_BY_FILTER_PAGED: string = "/getAllByFiltersPaged";
+export const GET_BY_ID_ROUTE: string = "/getById";
+export const COUNT_ALL_BY_FILTERS: string = "/countAllByFilters";
+export const CREATE_ROUTE: string = "/create";
+export const UPDATE_ROUTE: string = "/update";
+export const DELETE_ROUTE: string = "/delete";
+export const CREATE_ALL_ROUTE: string = "/createAll";
+export const DELETEALL_ROUTE: string = "/deleteAll";
