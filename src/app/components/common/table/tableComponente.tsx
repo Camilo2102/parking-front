@@ -2,6 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { DataTable, DataTableRowEditCompleteEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import Swal from 'sweetalert2'
+import { Dialog } from 'primereact/dialog';
 
 import { InputText } from 'primereact/inputtext';
 import 'primeicons/primeicons.css';
@@ -113,8 +114,6 @@ export default function Table<T extends TableItem>(props: TableProps<T>) {
           </div>
         );
       };
-
-
       return (
         <>
           <DataTable value={data} editMode="row" dataKey="id" tableStyle={{ minWidth: '50rem', border: '1px solid #ddd' }} style={{ margin: '5%' }} onRowEditComplete={onRowEditComplete}>
@@ -123,41 +122,46 @@ export default function Table<T extends TableItem>(props: TableProps<T>) {
             <Column header="Eliminar" body={(rowData) => deleteButton(rowData)} headerStyle={{ width: '10%', minWidth: '8rem', fontWeight: 'bold' }}></Column>
           </DataTable>
       
+        <div>
           {showInputs ? (
-            <div style={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                border: '1px solid #ccc', 
-                padding: '20px', 
-                borderRadius: '8px', 
-                width: '300px', 
-                margin: '0 auto',
-                fontFamily: 'Arial, sans-serif',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                background: '#f8f8f8',
-                marginBottom: '50px'
-              }}>
-                <h2 style={{ marginBottom: '20px', color: '#333' }}>Agregar Nuevo Item</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <Dialog
+              header="Agregar Nuevo Item"
+              visible={showInputs}
+              style={{ width: '400px' }}
+              onHide={() => setShowInputs(false)}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   {renderInputFields()}
                 </div>
                 <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
-                  <button className="p-button p-button-success" onClick={saveNewItem} style={{ width: '100px', marginRight: '10px', fontSize: '14px', backgroundColor: '#1E6FB7' }}>
+                  <button
+                    className="p-button p-button-success"
+                    onClick={saveNewItem}
+                    style={{ width: '100px', marginRight: '10px', fontSize: '14px', backgroundColor: '#1E6FB7' }}
+                  >
                     Guardar
                   </button>
-                  <button className="p-button p-button-secondary" onClick={cancelAddNewItem} style={{ width: '100px', fontSize: '14px' }}>
+                  <button
+                    className="p-button p-button-secondary"
+                    onClick={cancelAddNewItem}
+                    style={{ width: '100px', fontSize: '14px' }}
+                  >
                     Cancelar
                   </button>
                 </div>
               </div>
-              
+            </Dialog>
           ) : (
-            <button className="p-button p-button-success" style={{ display: 'block', margin: 'auto', backgroundColor: '#1E6FB7' }} onClick={addNewItem}>
+            <button
+              className="p-button p-button-success"
+              style={{ display: 'block', margin: 'auto', backgroundColor: '#1E6FB7' }}
+              onClick={addNewItem}
+            >
               Agregar
             </button>
           )}
+      </div>
         </>
       );
       
