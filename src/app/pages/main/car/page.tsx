@@ -2,9 +2,16 @@
 
 import NavBar from "@/app/components/common/navBar/navBar";
 import Table from "@/app/components/common/table/tableComponente";
+import useCRUD from "@/app/hooks/common/useCRUD";
 import { ColumnTable } from "@/app/interfaces/model";
+import { Car } from "@/app/model/common/general";
+import { useEffect, useState } from "react";
 
 export default function Login() {
+    const [data, setData] = useState<Car[]>([]);
+    const {getAll} = useCRUD<Car>('car')
+
+
     const columns: ColumnTable[] = [
         { field: 'plate', name: "Placa" },
         { field: 'model', name: "Modelo" },
@@ -12,13 +19,13 @@ export default function Login() {
         { field: 'color', name: "Color" },
     ];
 
-    const data = [
-        {id: "1", plate: "XYZ-123", model: "Acme Motors", brand: "316304678", color: "Rojo metálico"},
-        {id: "2", plate: "ABC-456", model: "Nebula Cruiser", brand: "Quantum Drive", color: "Azul eléctrico"},
-        {id: "3", plate: "DEF-789", model: "Sonic Sprint", brand: "Velocity Motors", color: "Plateado brillante"},
-        {id: "4", plate: "GHI-012", model: "FuturaX", brand: "TechAuto", color: "Negro mate"},
-        {id: "5", plate: "JKL-345", model: "GreenLeaf", brand: "EcoRide", color: " Verde eco-amigable"},
-    ]
+    useEffect(()=> {
+        getAll(false, {} as Car).then(res => {
+            console.log(res);
+            
+        })
+    })
+
 
     return (
         <>
