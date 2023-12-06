@@ -1,5 +1,6 @@
 'use client';
 
+import NavBar from "@/app/components/common/navBar/navBar";
 import Table from "@/app/components/common/table/tableComponente";
 import { ColumnTable } from "@/app/interfaces/model";
 
@@ -19,6 +20,7 @@ export default function Login() {
 
     return (
         <>
+            <NavBar></NavBar>
             <h1 style={{textAlign: 'center', fontSize: '50px'}}>Clientes</h1>
             <Table columns={columns} values={data}></Table> 
         </>  

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { DataTable, DataTableRowEditCompleteEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import Swal from 'sweetalert2'
@@ -18,6 +18,8 @@ interface TableProps<T> {
 
 export default function Table<T extends TableItem>(props: TableProps<T>) {
     const [data, setData] = useState<T[]>([]);
+    const [showInputs, setShowInputs] = useState(false);
+    const [newItem, setNewItem] = useState<Partial<T>>({});
 
     useEffect(() => {
         setData(props.values);
@@ -79,11 +81,84 @@ export default function Table<T extends TableItem>(props: TableProps<T>) {
         </button>
     );
 
-    return (
-        <DataTable value={data} editMode="row" dataKey="id" tableStyle={{ minWidth: '50rem', border: '1px solid #ddd' }} style={{ margin: '5%' }} onRowEditComplete={onRowEditComplete}>
+    const addNewItem = () => {
+        setShowInputs(true);
+      };
+    
+      const saveNewItem = () => {
+        // Realiza las validaciones necesarias antes de agregar el nuevo ítem
+        if (Object.keys(newItem).length > 0) {
+          setData([...data, newItem as T]);
+          setShowInputs(false);
+          setNewItem({});
+          Swal.fire('Agregado', 'Nuevo ítem agregado con éxito.', 'success');
+        } else {
+          Swal.fire('Error', 'Por favor, completa al menos un campo.', 'error');
+        }
+      };
+    
+      const cancelAddNewItem = () => {
+        setShowInputs(false);
+        setNewItem({});
+      };
+      const renderInputFields = () => {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            {props.columns.map((column, index) => (
+              <div key={`input-${index}`} style={{ marginBottom: '10px' }}>
+                <label htmlFor={`newItem${column.field}`}  style={{ marginRight: '5px', color: 'gray', fontFamily: 'Arial, sans-serif' }}>{column.name}</label>
+                <InputText id={`newItem${column.field}`} value={newItem[column.field] || ''} onChange={(e) => setNewItem({ ...newItem, [column.field]: e.target.value })} style={{ height: '20px' }} />
+              </div>
+            ))}
+          </div>
+        );
+      };
+
+
+      return (
+        <>
+          <DataTable value={data} editMode="row" dataKey="id" tableStyle={{ minWidth: '50rem', border: '1px solid #ddd' }} style={{ margin: '5%' }} onRowEditComplete={onRowEditComplete}>
             {tableColumns()}
             <Column header="Editar" rowEditor headerStyle={{ width: '10%', minWidth: '8rem', fontWeight: 'bold' }}></Column>
             <Column header="Eliminar" body={(rowData) => deleteButton(rowData)} headerStyle={{ width: '10%', minWidth: '8rem', fontWeight: 'bold' }}></Column>
-        </DataTable>
-    );
+          </DataTable>
+      
+          {showInputs ? (
+            <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                border: '1px solid #ccc', 
+                padding: '20px', 
+                borderRadius: '8px', 
+                width: '300px', 
+                margin: '0 auto',
+                fontFamily: 'Arial, sans-serif',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                background: '#f8f8f8',
+                marginBottom: '50px'
+              }}>
+                <h2 style={{ marginBottom: '20px', color: '#333' }}>Agregar Nuevo Item</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                  {renderInputFields()}
+                </div>
+                <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
+                  <button className="p-button p-button-success" onClick={saveNewItem} style={{ width: '100px', marginRight: '10px', fontSize: '14px', backgroundColor: '#1E6FB7' }}>
+                    Guardar
+                  </button>
+                  <button className="p-button p-button-secondary" onClick={cancelAddNewItem} style={{ width: '100px', fontSize: '14px' }}>
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+              
+          ) : (
+            <button className="p-button p-button-success" style={{ display: 'block', margin: 'auto', backgroundColor: '#1E6FB7' }} onClick={addNewItem}>
+              Agregar
+            </button>
+          )}
+        </>
+      );
+      
 }
