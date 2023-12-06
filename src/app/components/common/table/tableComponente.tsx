@@ -1,26 +1,18 @@
 import React, { useEffect, useState} from 'react';
-import { DataTable, DataTableRowEditCompleteEvent } from 'primereact/datatable';
+import { DataTable, DataTableRowEditCompleteEvent, DataTableValue } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import Swal from 'sweetalert2'
 import { Dialog } from 'primereact/dialog';
 
 import { InputText } from 'primereact/inputtext';
 import 'primeicons/primeicons.css';
+import { TableProps } from '@/app/interfaces/model';
 
-interface TableItem {
-    id: string;
-    [key: string]: string;
-}
 
-interface TableProps<T> {
-    values: T[];
-    columns: { field: string; name: string }[];
-}
-
-export default function Table<T extends TableItem>(props: TableProps<T>) {
-    const [data, setData] = useState<T[]>([]);
+export default function Table(props: TableProps) {
+    const [data, setData] = useState<DataTableValue[]>([]);
     const [showInputs, setShowInputs] = useState(false);
-    const [newItem, setNewItem] = useState<Partial<T>>({});
+    const [newItem, setNewItem] = useState<Partial<any>>({});
 
     useEffect(() => {
         setData(props.values);
@@ -30,7 +22,7 @@ export default function Table<T extends TableItem>(props: TableProps<T>) {
         let newData = [...data];
         let { newData: editedData, index } = e;
 
-        newData[index] = editedData as T;
+        newData[index] = editedData as DataTableValue;
         setData(newData);
         Swal.fire('Editado', 'Los datos han sido editados con éxito.', 'success');
     };
@@ -76,7 +68,7 @@ export default function Table<T extends TableItem>(props: TableProps<T>) {
         ));
     };
 
-    const deleteButton = (rowData: T) => (
+    const deleteButton = (rowData: DataTableValue) => (
         <button className="p-button p-button-danger p-button-icon-only" onClick={() => deleteItem(rowData.id)}>
             <i className="pi pi-trash"></i>
         </button>
@@ -89,7 +81,7 @@ export default function Table<T extends TableItem>(props: TableProps<T>) {
       const saveNewItem = () => {
         // Realiza las validaciones necesarias antes de agregar el nuevo ítem
         if (Object.keys(newItem).length > 0) {
-          setData([...data, newItem as T]);
+          setData([...data, newItem as DataTableValue]);
           setShowInputs(false);
           setNewItem({});
           Swal.fire('Agregado', 'Nuevo ítem agregado con éxito.', 'success');
@@ -106,9 +98,11 @@ export default function Table<T extends TableItem>(props: TableProps<T>) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             {props.columns.map((column, index) => (
-              <div key={`input-${index}`} style={{ marginBottom: '10px' }}>
-                <label htmlFor={`newItem${column.field}`}  style={{ marginRight: '5px', color: 'gray', fontFamily: 'Arial, sans-serif' }}>{column.name}</label>
-                <InputText id={`newItem${column.field}`} value={newItem[column.field] || ''} onChange={(e) => setNewItem({ ...newItem, [column.field]: e.target.value })} style={{ height: '20px' }} />
+              <div key={`input-${index}`} style={{ marginBottom: '10px', marginTop: '10px' }}>
+                <span className="p-float-label">
+                  <InputText id="username" value={newItem[column.field] || ''} onChange={(e) => setNewItem({ ...newItem, [column.field]: e.target.value })} />
+                  <label htmlFor="username">{column.name}</label>
+                </span>
               </div>
             ))}
           </div>

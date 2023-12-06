@@ -1,15 +1,17 @@
+import { useNavigationContext } from '@/app/providers/common/navigationProvider';
 import { Menubar } from 'primereact/menubar';
 export default function NavBar(){
+  const {goToRoute}= useNavigationContext()
     const items = [
         {
           label: 'Clientes',
           icon: 'pi pi-fw pi-users',
-          command: () => { window.location.href = '/pages/main/client'; } 
+          command: () => { goToRoute('/pages/main/client') ; } 
         },
         {
           label: 'Carros',
           icon: 'pi pi-fw pi-car',
-          command: () => { window.location.href = '/pages/main/car'; } 
+          command: () => { goToRoute('/pages/main/car'); } 
         },
         {
           label: 'Servicios',
@@ -18,17 +20,17 @@ export default function NavBar(){
             {
                 label: 'Lavado',
                 icon: 'pi pi-fw pi-sun',
-                command: () => { window.location.href = '#'; } 
+                command: () => {  } 
             },
             {
                 label: 'Cafeteria',
                 icon: 'pi pi-fw pi-cart-plus',
-                command: () => { window.location.href = '#'; } 
+                command: () => {  } 
             },
             {
                 label: 'Mecanica',
                 icon: 'pi pi-fw pi-car',
-                command: () => { window.location.href = '#'; } 
+                command: () => {  } 
             },
           ]
         }
