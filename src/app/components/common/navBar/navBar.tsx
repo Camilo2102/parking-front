@@ -35,7 +35,7 @@ export default function NavBar(){
           ]
         }
       ];
-      const start = <img alt="logo" src="logo.png" height="40" className="p-mr-2" />;
+      const start = <img alt="logo" src="/logo.jpg" height="40" className="p-mr-2" style={{borderRadius: '10px'}}/>;
       return(
         <Menubar model={items} start={start} />
       )

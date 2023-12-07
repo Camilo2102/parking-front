@@ -17,12 +17,12 @@ export default function Login() {
         {id: "3", name: "Camilo",  address: "Cra 13 # 10-78", number: "398304678"},
         {id: "4", name: "Juan Esteban",  address: "Cra 17 # 10-78", number: "312204678"},
     ]
-
+    //*Tocxa cambiar el typeOfValue por client
     return (
         <>
             <NavBar></NavBar>
             <h1 style={{textAlign: 'center', fontSize: '50px'}}>Clientes</h1>
-            <Table columns={columns} values={data}></Table> 
+            <Table columns={columns} values={data} typeOfValue = {'client'}></Table> 
         </>  
     )
 }

@@ -21,17 +21,15 @@ export default function Login() {
 
     useEffect(()=> {
         getAll({} as Car).then(res => {
-            console.log(res);
+            console.log(typeof(res));
             setData(res)
         })
     })
-
-
     return (
         <>
             <NavBar></NavBar>
-            <h1 style={{textAlign: 'center', fontSize: '50px'}}>Carros en el parqueadero</h1>
-            <Table columns={columns} values={data}></Table> 
+            <h1 style={{textAlign: 'center', fontSize: '50px',}}>Carros en el parqueadero</h1>
+            <Table<Car> columns={columns} values={data}  typeOfValue = {'car'}></Table> 
         </>  
     )
 }

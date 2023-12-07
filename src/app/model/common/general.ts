@@ -11,5 +11,5 @@ export interface Car extends GeneralModel{
     color:  string;
     model:  string;
     plate:  string;
-   }
+}
    

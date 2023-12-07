@@ -7,51 +7,63 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import 'primeicons/primeicons.css';
 import { TableProps } from '@/app/interfaces/model';
+import useCRUD from "@/app/hooks/common/useCRUD";
 
 
-export default function Table(props: TableProps) {
+export default function Table<T extends DataTableValue>(props: TableProps<T>) {
     const [data, setData] = useState<DataTableValue[]>([]);
     const [showInputs, setShowInputs] = useState(false);
     const [newItem, setNewItem] = useState<Partial<any>>({});
+    const [editedRowIndex, setEditedRowIndex] = useState<number | null>(null);
+    const {create, deleteData, update} = useCRUD<T>(props.typeOfValue)
 
     useEffect(() => {
         setData(props.values);
     }, [props.values]);
 
-    const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
-        let newData = [...data];
-        let { newData: editedData, index } = e;
-
-        newData[index] = editedData as DataTableValue;
-        setData(newData);
-        Swal.fire('Editado', 'Los datos han sido editados con éxito.', 'success');
+    const onRowEditInit = (e: DataTableRowEditCompleteEvent) => {
+      setEditedRowIndex(e.index);
     };
-
+  
+    const onRowEditCancel = () => {
+      setEditedRowIndex(null);
+    };
+    
     const textEditor = (options: any) => {
-        return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options.editorCallback(e.target.value)} />;
+      return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options.editorCallback(e.target.value)} />;
     };
 
-    const deleteItem = (itemId: string) => {
-        const itemToDelete = data.find((item) => item.id === itemId);
+    const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
+    
+      try {
+        const { newData: editedData, index } = e;
+        const updatedData = [...data];
+        updatedData[index] = editedData as T;
+  
+        await update(editedData as T); 
+        setData(updatedData);
+        setEditedRowIndex(null);
+        Swal.fire('Editado', 'Los datos han sido editados con éxito.', 'success');
+      } catch (error) {
+        console.error('Error al editar el item:', error);
+        Swal.fire('Error', 'Hubo un error al editar el item.', 'error');
+      }
+    };
 
-        if (itemToDelete) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: '¡No podrás revertir esto!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, eliminarlo',
-                cancelButtonText: 'Cancelar',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const updatedData = data.filter((item) => item.id !== itemId);
-                    setData(updatedData);
-                    Swal.fire('Eliminado', 'Los datos han sido eliminados.', 'success');
-                }
-            });
-        }
+    const deleteItem = async (itemId: string) => {
+      const itemToDelete = data.find((item) => item.id === itemId);
+  
+      if (itemToDelete) {
+          try {
+              await deleteData(itemToDelete.id);
+              const updatedData = data.filter((item) => item.id !== itemId);
+              setData(updatedData);
+              Swal.fire('Eliminado', 'Los datos han sido eliminados.', 'success');
+          } catch (error) {
+              console.error('Error al eliminar el item:', error);
+              Swal.fire('Error', 'Hubo un error al eliminar el item.', 'error');
+          }
+      }
     };
 
     const tableColumns = () => {
@@ -77,12 +89,19 @@ export default function Table(props: TableProps) {
         setShowInputs(true);
       };
     
-      const saveNewItem = () => {
+      const saveNewItem = async () => {
         if (Object.keys(newItem).length > 0) {
-          setData([...data, newItem as DataTableValue]);
-          setShowInputs(false);
-          setNewItem({});
-          Swal.fire('Agregado', 'Nuevo ítem agregado con éxito.', 'success');
+          try {
+            const createdItem = await create(newItem as T);
+            setData([...data, createdItem]);
+            setShowInputs(false);
+            setNewItem({});
+            Swal.fire('Agregado', 'Nuevo ítem agregado con éxito.', 'success');
+        } catch (error) {
+            // Manejo de errores, por ejemplo:
+            console.error('Error al agregar el nuevo ítem:', error);
+            Swal.fire('Error', 'Hubo un error al agregar el nuevo ítem.', 'error');
+        }
         } else {
           Swal.fire('Error', 'Por favor, completa al menos un campo.', 'error');
         }
@@ -92,6 +111,7 @@ export default function Table(props: TableProps) {
         setShowInputs(false);
         setNewItem({});
       };
+
       const renderInputFields = () => {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -106,22 +126,17 @@ export default function Table(props: TableProps) {
           </div>
         );
       };
+
       return (
         <>
-          <DataTable value={data} editMode="row" dataKey="id" tableStyle={{ minWidth: '50rem', border: '1px solid #ddd' }} style={{ margin: '5%' }} onRowEditComplete={onRowEditComplete}>
+          <DataTable value={data} editMode="row" dataKey="id" tableStyle={{ minWidth: '50rem', border: '1px solid #ddd' }} style={{ margin: '5%' }} onRowEditInit={onRowEditInit} onRowEditCancel={onRowEditCancel} onRowEditComplete={onRowEditComplete}>
             {tableColumns()}
             <Column header="Editar" rowEditor headerStyle={{ width: '10%', minWidth: '8rem', fontWeight: 'bold' }}></Column>
             <Column header="Eliminar" body={(rowData) => deleteButton(rowData)} headerStyle={{ width: '10%', minWidth: '8rem', fontWeight: 'bold' }}></Column>
           </DataTable>
-      
         <div>
           {showInputs ? (
-            <Dialog
-              header="Agregar Nuevo Item"
-              visible={showInputs}
-              style={{ width: '400px' }}
-              onHide={() => setShowInputs(false)}
-            >
+            <Dialog header="Agregar Nuevo Item" visible={showInputs} style={{ width: '400px' }} onHide={() => setShowInputs(false)}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   {renderInputFields()}
@@ -130,7 +145,7 @@ export default function Table(props: TableProps) {
                   <button
                     className="p-button p-button-success"
                     onClick={saveNewItem}
-                    style={{ width: '100px', marginRight: '10px', fontSize: '14px', backgroundColor: '#1E6FB7' }}
+                    style={{ width: '100px', marginRight: '10px', fontSize: '14px', backgroundColor: '#5dc1b9 ' }}
                   >
                     Guardar
                   </button>
@@ -147,7 +162,7 @@ export default function Table(props: TableProps) {
           ) : (
             <button
               className="p-button p-button-success"
-              style={{ display: 'block', margin: 'auto', backgroundColor: '#1E6FB7' }}
+              style={{ display: 'block', margin: 'auto', backgroundColor: '#5dc1b9 ' }}
               onClick={addNewItem}
             >
               Agregar
