@@ -3,6 +3,9 @@ import {Paginator} from "../../interfaces/model"
 import useHttpPettions from "./useHttpPetitions";
 
 export default function useCRUD<T>(baseUrl: string){
+
+    baseUrl = `api/${baseUrl}`;
+
     const {httpGet, httpPost, httpPut, httpDelete} = useHttpPettions();
 
     /**
@@ -13,7 +16,7 @@ export default function useCRUD<T>(baseUrl: string){
      */
     const getAll = (secure: boolean = true, filter: T): Promise<T[]> => {
         const petitioRoute: string = baseUrl + Routes.GET_ALL_BY_FILTER;
-        return httpPost(petitioRoute, secure, filter);
+        return httpPost(petitioRoute, secure, [filter]);
     }
 
     /**
