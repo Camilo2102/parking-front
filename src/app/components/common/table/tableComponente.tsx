@@ -48,7 +48,6 @@ export default function Table(props: TableProps) {
                 if (result.isConfirmed) {
                     const updatedData = data.filter((item) => item.id !== itemId);
                     setData(updatedData);
-    
                     Swal.fire('Eliminado', 'Los datos han sido eliminados.', 'success');
                 }
             });
@@ -79,7 +78,6 @@ export default function Table(props: TableProps) {
       };
     
       const saveNewItem = () => {
-        // Realiza las validaciones necesarias antes de agregar el nuevo ítem
         if (Object.keys(newItem).length > 0) {
           setData([...data, newItem as DataTableValue]);
           setShowInputs(false);

@@ -2,7 +2,7 @@ import * as Routes from "../../constants/routesContsants"
 import {Paginator} from "../../interfaces/model"
 import useHttpPettions from "./useHttpPetitions";
 
-export default function useCRUD<T>(baseUrl: string){
+export default function useCRUD<T>(baseUrl: string, secure: boolean = false){
 
     baseUrl = `api/${baseUrl}`;
 
@@ -10,11 +10,10 @@ export default function useCRUD<T>(baseUrl: string){
 
     /**
      * Obtiene la peticion para traer todos los elementos de un objeto T
-     * @param secure indica si requiere token, por defecto es true
      * @param filter
      * @returns la peticion lista que trae los objetos de un elemento T
      */
-    const getAll = (secure: boolean = true, filter: T): Promise<T[]> => {
+    const getAll = (filter: T): Promise<T[]> => {
         const petitioRoute: string = baseUrl + Routes.GET_ALL_BY_FILTER;
         return httpPost(petitioRoute, secure, [filter]);
     }
@@ -22,10 +21,9 @@ export default function useCRUD<T>(baseUrl: string){
     /**
      * Obtiene la peticion para traer la cantidad de elementos de un objeto T
      * @param baseUrl la url basica para hacer la peticion
-     * @param secure indica si requiere token, por defecto es true
      * @returns la peticion lista para obtener la cantidad de registros
      */
-    const getAllCount = (secure: boolean = true): Promise<T> => {
+    const getAllCount = (): Promise<T> => {
         const petitioRoute: string = baseUrl + Routes.GET_ALL_COUNT_ROUTE;
         return httpGet(petitioRoute, secure);
     }
@@ -33,7 +31,6 @@ export default function useCRUD<T>(baseUrl: string){
     /**
      * Obtiene la peticion para traer todos los elementos de un objeto T, teniendo en cuenta un paginador
      * @param baseUrl la url basica para hacer la peticion
-     * @param secure indica si requiere token, por defecto es true
      * @param page indica la pagina que se va a obtener
      * @param pageSize el tamaño de los elementos
      * @returns la peticion lista para traer los elemtnos T paginados
@@ -52,19 +49,18 @@ export default function useCRUD<T>(baseUrl: string){
 
     /**
      * Este metodo se encarga de obtener los valores que cumplan con los filtros ingresados
-     * @param secure indica si requiere token, por defecto es true
      * @param page indica la pagina que se va a obtener
      * @param pageSize el tamaño de los elementos
      * @param t El objeto a filtrar
      * @returns  la lista de objetos filtrados
      */
-    const getAllByFilter = (secure: boolean = true, paginator: Paginator, t: any): Promise<T[]> => {
+    const getAllByFilter = (paginator: Paginator, t: any): Promise<T[]> => {
         const petitioRoute: string = baseUrl + Routes.GET_ALL_BY_FILTER_PAGED + `?pageNumber=${paginator.page}&pageSize=${paginator.rows}`;
         return httpPost(petitioRoute, secure, [t]);
     }
 
     //  todo    
-    const countAllByFilter = (secure: boolean = true, t: any): Promise<number> => {
+    const countAllByFilter = (t: any): Promise<number> => {
         const petitioRoute: string = baseUrl + Routes.COUNT_ALL_BY_FILTERS;
         return httpPost(petitioRoute, secure, [t]);
     }
@@ -72,11 +68,10 @@ export default function useCRUD<T>(baseUrl: string){
     /**
      * Obtiene la peticion para crear un registro de tipo T
      * @param baseUrl la url basica para hacer la peticion
-     * @param secure indica si requiere token, por defecto es true
      * @param body el objeto que se va a enviar en la peticion de tipo T
      * @returns el objeto creado
      */
-    const create = (secure: boolean = true, body: T): Promise<T> => {
+    const create = ( body: T): Promise<T> => {
         const petitioRoute: string = baseUrl + Routes.CREATE_ROUTE;
         return httpPost(petitioRoute, secure, [body]);
     }
@@ -84,11 +79,10 @@ export default function useCRUD<T>(baseUrl: string){
     /**
      * Obtiene la peticion para actualizar un registro de tipo T
      * @param baseUrl la url basica para hacer la peticion
-     * @param secure indica si requiere token, por defecto es true
      * @param body el objeto a actualizar, importante que tenga el id, en caso contrario falla
      * @returns la peticion con el objeto actualizado
      */
-    const update = (secure: boolean = true, body: T): Promise<T> => {
+    const update = ( body: T): Promise<T> => {
         const petitioRoute: string = baseUrl + Routes.UPDATE_ROUTE;
         return httpPut(petitioRoute, secure, [body]);
     }
@@ -96,26 +90,25 @@ export default function useCRUD<T>(baseUrl: string){
     /**
      * Se elimina un registro por id
      * @param baseUrl la url basica para hacer la peticion
-     * @param secure indica si requiere token, por defecto es true
      * @param id el id del elemento a eliminar
      * @returns el estado de la operacion
      */
-    const deleteData = (secure: boolean = true, id: string): Promise<any> => {
+    const deleteData = ( id: string): Promise<any> => {
         const petitioRoute: string = baseUrl + Routes.DELETE_ROUTE + `?id=${id}`;
         return httpDelete(petitioRoute, secure);
     }
 
-    const createAll = (secure: boolean = true, body: T[]): Promise<any> =>{
+    const createAll = (body: T[]): Promise<any> =>{
         const petitioRoute: string = baseUrl + Routes.CREATE_ALL_ROUTE;
         return httpPost(petitioRoute, secure, body);
     }
 
-    const deleteAll = (secure: boolean = true, id: string): Promise<any> =>{
+    const deleteAll = ( id: string): Promise<any> =>{
         const petitioRoute: string = baseUrl + Routes.DELETEALL_ROUTE  + `?id=${id}`;
         return httpDelete(petitioRoute, secure);
     }
 
-    const getById = (secure: boolean= true, id: string): Promise<any> => {
+    const getById = ( id: string): Promise<any> => {
         const petitioRoute: string = baseUrl + Routes.GET_BY_ID_ROUTE + `?id=${id}`;
         return httpGet(petitioRoute, secure);
     }

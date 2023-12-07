@@ -20,9 +20,9 @@ export default function Login() {
     ];
 
     useEffect(()=> {
-        getAll(false, {} as Car).then(res => {
+        getAll({} as Car).then(res => {
             console.log(res);
-            
+            setData(res)
         })
     })
 
