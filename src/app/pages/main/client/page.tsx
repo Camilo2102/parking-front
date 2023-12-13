@@ -2,26 +2,32 @@
 
 import NavBar from "@/app/components/common/navBar/navBar";
 import Table from "@/app/components/common/table/tableComponente";
+import useCRUD from "@/app/hooks/common/useCRUD";
+import { Client } from "@/app/model/common/general";
 import { ColumnTable } from "@/app/interfaces/model";
+import { useEffect, useState } from "react";
 
 export default function Login() {
+    const [data, setData] = useState<Client[]>([]);
+    const {getAll} = useCRUD<Client>('client')
+
     const columns: ColumnTable[] = [
         { field: 'name', name: "Nombre" },
+        { field: 'lastName', name: "Apellido" },
         { field: 'address', name: "Dirección" },
-        { field: 'number', name: "Número" },
+        { field: 'phone', name: "Número" },
     ];
 
-    const data = [
-        {id: "1", name: "Jazmin", address: "Cra 10 # 10-78", number: "316304678"},
-        {id: "2", name: "Andrea", address: "Cra 14 # 10-78", number: "3163484678"},
-        {id: "3", name: "Camilo",  address: "Cra 13 # 10-78", number: "398304678"},
-        {id: "4", name: "Juan Esteban",  address: "Cra 17 # 10-78", number: "312204678"},
-    ]
-    //*Tocxa cambiar el typeOfValue por client
+    useEffect(()=> {
+        getAll({} as Client).then(res => {
+            setData(res)
+        })
+    })
+   
     return (
         <>
             <NavBar></NavBar>
-            <h1 style={{textAlign: 'center', fontSize: '50px'}}>Clientes</h1>
+            <h1 style={{textAlign: 'center', fontSize: '50px', fontStyle: 'italic'}}>Clientes</h1>
             <Table columns={columns} values={data} typeOfValue = {'client'}></Table> 
         </>  
     )

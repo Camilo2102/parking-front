@@ -131,7 +131,6 @@ export default function Table<T extends DataTableValue>(props: TableProps<T>) {
         <>
           <DataTable value={data} editMode="row" dataKey="id" tableStyle={{ minWidth: '50rem', border: '1px solid #ddd' }} style={{ margin: '5%' }} onRowEditInit={onRowEditInit} onRowEditCancel={onRowEditCancel} onRowEditComplete={onRowEditComplete}>
             {tableColumns()}
-            <Column header="Editar" rowEditor headerStyle={{ width: '10%', minWidth: '8rem', fontWeight: 'bold' }}></Column>
             <Column header="Eliminar" body={(rowData) => deleteButton(rowData)} headerStyle={{ width: '10%', minWidth: '8rem', fontWeight: 'bold' }}></Column>
           </DataTable>
         <div>
@@ -162,7 +161,7 @@ export default function Table<T extends DataTableValue>(props: TableProps<T>) {
           ) : (
             <button
               className="p-button p-button-success"
-              style={{ display: 'block', margin: 'auto', backgroundColor: '#5dc1b9 ' }}
+              style={{ display: 'block', margin: 'auto', backgroundColor: '#800080' }}
               onClick={addNewItem}
             >
               Agregar

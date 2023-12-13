@@ -12,4 +12,11 @@ export interface Car extends GeneralModel{
     model:  string;
     plate:  string;
 }
+
+export interface Client extends GeneralModel{
+    name: String;
+    lastName: String;
+    addres: String;
+    phone: String;
+}
    

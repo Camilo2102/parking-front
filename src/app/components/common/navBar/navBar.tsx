@@ -12,27 +12,6 @@ export default function NavBar(){
           label: 'Carros',
           icon: 'pi pi-fw pi-car',
           command: () => { goToRoute('/pages/main/car'); } 
-        },
-        {
-          label: 'Servicios',
-          icon: 'pi pi-fw pi-cog', 
-          items:[
-            {
-                label: 'Lavado',
-                icon: 'pi pi-fw pi-sun',
-                command: () => {  } 
-            },
-            {
-                label: 'Cafeteria',
-                icon: 'pi pi-fw pi-cart-plus',
-                command: () => {  } 
-            },
-            {
-                label: 'Mecanica',
-                icon: 'pi pi-fw pi-car',
-                command: () => {  } 
-            },
-          ]
         }
       ];
       const start = <img alt="logo" src="/logo.jpg" height="40" className="p-mr-2" style={{borderRadius: '10px'}}/>;
